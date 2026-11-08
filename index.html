@@ -3,32 +3,119 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spieleabend – Multiplayer Games</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       background: #101322;
       color: white;
       font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
       text-align: center;
-      padding: 80px 20px;
     }
 
     h1 {
-      font-size: 48px;
-      margin-bottom: 15px;
+      font-size: clamp(36px, 7vw, 56px);
+      margin-bottom: 12px;
     }
 
-    p {
+    .subtitle {
       color: #a8aec7;
       font-size: 18px;
+      margin-bottom: 36px;
+    }
+
+    .status-card {
+      background: #1c2135;
+      border: 1px solid #343b58;
+      border-radius: 18px;
+      padding: 28px;
+    }
+
+    #status {
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    #userId {
+      color: #a8aec7;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+      margin-top: 16px;
     }
   </style>
 </head>
+
 <body>
-  <h1>🎮 SPIELEABEND</h1>
-  <p>Unsere Multiplayer-Spieleplattform</p>
-  <p>Coming soon!</p>
+  <main class="container">
+    <h1>🎮 SPIELEABEND</h1>
+    <p class="subtitle">Unsere Multiplayer-Spieleplattform</p>
+
+    <section class="status-card">
+      <p id="status">⏳ Verbindung zu Firebase wird hergestellt ...</p>
+      <p id="userId"></p>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInAnonymously,
+      onAuthStateChanged
+    } from
+      "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCI2aBPnThnjDFztyozxr0KFAvpHJkvpJ4",
+      authDomain: "spieleabend-20e34.firebaseapp.com",
+      databaseURL: "https://spieleabend-20e34-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "spieleabend-20e34",
+      storageBucket: "spieleabend-20e34.firebasestorage.app",
+      messagingSenderId: "644857238902",
+      appId: "1:644857238902:web:828bc5219a871dcbaf1657"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const status = document.getElementById("status");
+    const userId = document.getElementById("userId");
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        status.textContent = "✅ Firebase erfolgreich verbunden!";
+        status.style.color = "#4ade80";
+        userId.textContent = "Deine anonyme Benutzer-ID: " + user.uid;
+        return;
+      }
+
+      try {
+        await signInAnonymously(auth);
+      } catch (error) {
+        status.textContent = "❌ Verbindung fehlgeschlagen";
+        status.style.color = "#f87171";
+        userId.textContent = error.code + ": " + error.message;
+        console.error(error);
+      }
+    });
+  </script>
 </body>
 </html>
