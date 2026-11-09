@@ -1,121 +1,20 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spieleabend – Multiplayer Games</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: #101322;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 520px;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: clamp(36px, 7vw, 56px);
-      margin-bottom: 12px;
-    }
-
-    .subtitle {
-      color: #a8aec7;
-      font-size: 18px;
-      margin-bottom: 36px;
-    }
-
-    .status-card {
-      background: #1c2135;
-      border: 1px solid #343b58;
-      border-radius: 18px;
-      padding: 28px;
-    }
-
-    #status {
-      font-size: 17px;
-      font-weight: bold;
-    }
-
-    #userId {
-      color: #a8aec7;
-      font-size: 12px;
-      overflow-wrap: anywhere;
-      margin-top: 16px;
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080b19">
+  <meta name="description" content="Spieleabend – Multiplayer-Partyspiele, überall gemeinsam spielen.">
+  <title>Spieleabend – Gemeinsam spielen</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23131d39'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-size='39'%3E%F0%9F%8E%AE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
 </head>
-
 <body>
-  <main class="container">
-    <h1>🎮 SPIELEABEND</h1>
-    <p class="subtitle">Unsere Multiplayer-Spieleplattform</p>
-
-    <section class="status-card">
-      <p id="status">⏳ Verbindung zu Firebase wird hergestellt ...</p>
-      <p id="userId"></p>
-    </section>
-  </main>
-
-  <script type="module">
-    import { initializeApp } from
-      "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
-
-    import {
-      getAuth,
-      signInAnonymously,
-      onAuthStateChanged
-    } from
-      "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCI2aBPnTHnjDFztyozxr0KFAvpHJkvpJ4",
-      authDomain: "spieleabend-20e34.firebaseapp.com",
-      databaseURL: "https://spieleabend-20e34-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "spieleabend-20e34",
-      storageBucket: "spieleabend-20e34.firebasestorage.app",
-      messagingSenderId: "644857238902",
-      appId: "1:644857238902:web:828bc5219a871dcbaf1657"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    const status = document.getElementById("status");
-    const userId = document.getElementById("userId");
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        status.textContent = "✅ Firebase erfolgreich verbunden!";
-        status.style.color = "#4ade80";
-        userId.textContent = "Deine anonyme Benutzer-ID: " + user.uid;
-        return;
-      }
-
-      try {
-        await signInAnonymously(auth);
-      } catch (error) {
-        status.textContent = "❌ Verbindung fehlgeschlagen";
-        status.style.color = "#f87171";
-        userId.textContent = error.code + ": " + error.message;
-        console.error(error);
-      }
-    });
-  </script>
+  <div id="app" aria-live="polite">
+    <main class="initial-loading"><div class="loading-orbit"></div><p>Spieleabend wird gestartet …</p></main>
+  </div>
+  <div id="toast" class="toast" aria-live="assertive" role="status"></div>
+  <noscript><p class="nojs">Zum Spielen benötigst du JavaScript.</p></noscript>
 </body>
 </html>
